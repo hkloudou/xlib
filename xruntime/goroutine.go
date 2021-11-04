@@ -11,6 +11,20 @@ import (
 	"time"
 )
 
+// GoSafelySync
+func GoSafelySync(ignoreRecover bool, handler func(), catchFunc func(r interface{})) {
+	w := &sync.WaitGroup{}
+	GoSafely(w, ignoreRecover, handler, catchFunc)
+	w.Wait()
+}
+
+// GoUnterminatedSync GoUnterminatedSync
+func GoUnterminatedSync(handler func(), ignoreRecover bool, period time.Duration) {
+	w := &sync.WaitGroup{}
+	GoUnterminated(handler, w, ignoreRecover, period)
+	w.Wait()
+}
+
 // GoSafely wraps a `go func()` with recover()
 func GoSafely(wg *sync.WaitGroup, ignoreRecover bool, handler func(), catchFunc func(r interface{})) {
 	if wg != nil {
@@ -55,15 +69,15 @@ func GoSafely(wg *sync.WaitGroup, ignoreRecover bool, handler func(), catchFunc 
 // GoUnterminated is used for which goroutine wanna long live as its process.
 // @period: sleep time duration after panic to defeat @handle panic so frequently. if it is not positive,
 //          the @handle will be invoked asap after panic.
-func GoUnterminated(handle func(), wg *sync.WaitGroup, ignoreRecover bool, period time.Duration) {
+func GoUnterminated(handler func(), wg *sync.WaitGroup, ignoreRecover bool, period time.Duration) {
 	GoSafely(wg,
 		ignoreRecover,
-		handle,
+		handler,
 		func(r interface{}) {
 			if period > 0 {
 				time.Sleep(period)
 			}
-			GoUnterminated(handle, wg, ignoreRecover, period)
+			GoUnterminated(handler, wg, ignoreRecover, period)
 		},
 	)
 }
