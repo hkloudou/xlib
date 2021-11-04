@@ -22,15 +22,15 @@ func HostPort(addr string, port interface{}) string {
 	return fmt.Sprintf("%s:%v", host, port)
 }
 
-// GetPublicMainIP ...
-func GetPublicMainIP() (string, error) {
-	// UDP Connect, no handshake
-	conn, err := net.Dial("udp", "1.1.1.1")
-	if err != nil {
-		return "", err
-	}
-	defer conn.Close()
-	localAddr := conn.LocalAddr().(*net.UDPAddr)
+// // GetLocalMainIP ...
+// func GetLocalMainIP() (string, error) {
+// 	// UDP Connect, no handshake
+// 	conn, err := net.Dial("udp", "8.8.8.8:53")
+// 	if err != nil {
+// 		return "", err
+// 	}
+// 	defer conn.Close()
+// 	localAddr := conn.LocalAddr().(*net.UDPAddr)
 
-	return localAddr.IP.String(), nil
-}
+// 	return localAddr.IP.String(), nil
+// }
