@@ -1,11 +1,5 @@
 package xruntime
 
-import (
-	"fmt"
-
-	"github.com/hkloudou/xlib/xcolor"
-)
-
 // build info
 var (
 	_buildAppVersion      string
@@ -16,20 +10,7 @@ var (
 	_buildGitVersion      string // 构建git 版本
 	_buildGitBranch       string // 构建git branch
 	_buildGitLastCommitId string
-	xlibVersion           string
 )
-
-func init() {
-	// info, ok := debug.ReadBuildInfo()
-	// if ok {
-	// 	for _, value := range info.Deps {
-	// 		if value.Path == "github.com/hkloudou/xlib" {
-	// 			xlibVersion = value.Version
-	// 		}
-	// 	}
-	// }
-	xlibVersion = GetPkgVersion("github.com/hkloudou/xlib")
-}
 
 // BuildAppVersion get buildAppVersion
 func BuildAppVersion() string {
@@ -71,19 +52,25 @@ func BuildGitLastCommitId() string {
 	return _buildGitLastCommitId
 }
 
-func PrintBuildInfo() {
-	// fmt.Printf("%-20s : %s\n", fmt.Sprintf("xlib(%s)", xlibVersion), xcolor.Yellow("🧰🔨build info"))
-	fmt.Println("🛎🛎🛎🛎🛎")
-	fmt.Println(xcolor.Yellow("build info"))
-	//xlibVersion
-	fmt.Printf("%-20s : %s\n", xcolor.Green("xlib"), xcolor.Blue(xlibVersion))
-	fmt.Printf("%-20s : %s\n", xcolor.Green("version"), xcolor.Blue(_buildAppVersion))
-	fmt.Printf("%-20s : %s\n", xcolor.Green("user"), xcolor.Blue(_buildUser))
-	fmt.Printf("%-20s : %s\n", xcolor.Green("host"), xcolor.Blue(_buildHost))
-	fmt.Printf("%-20s : %s\n", xcolor.Green("time"), xcolor.Blue(_buildTime))
-	fmt.Printf("%-20s : %s\n", xcolor.Green("status"), xcolor.Blue(_buildStatus))
+// func PrintBuildInfo() {
+// 	// fmt.Printf("%-20s : %s\n", fmt.Sprintf("xlib(%s)", xlibVersion), xcolor.Yellow("🧰🔨build info"))
+// 	fmt.Println("🛎🛎🛎🛎🛎")
+// 	fmt.Println(xcolor.Yellow("build info"))
+// 	//xlibVersion
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("AppName"), xcolor.Blue(_appName))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("AppHost"), xcolor.Blue(HostName()))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("Region"), xcolor.Blue(AppRegion()))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("Zone"), xcolor.Blue(AppZone()))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("mmVersion"), xcolor.Red(mmVersion))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("go ver"), xcolor.Blue(goVersion))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("xlib"), xcolor.Blue(xlibVersion))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("version"), xcolor.Blue(_buildAppVersion))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("user"), xcolor.Blue(_buildUser))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("host"), xcolor.Blue(_buildHost))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("time"), xcolor.Blue(_buildTime))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("status"), xcolor.Blue(_buildStatus))
 
-	fmt.Printf("%-20s : %s\n", xcolor.Green("git"), xcolor.Blue(_buildGitVersion))
-	fmt.Printf("%-20s : %s\n", xcolor.Green("branch"), xcolor.Blue(_buildGitBranch))
-	fmt.Printf("%-20s : %s\n", xcolor.Green("commit"), xcolor.Blue(_buildGitLastCommitId))
-}
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("git"), xcolor.Blue(_buildGitVersion))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("branch"), xcolor.Blue(_buildGitBranch))
+// 	fmt.Printf("%-20s : %s\n", xcolor.Green("commit"), xcolor.Blue(_buildGitLastCommitId))
+// }
