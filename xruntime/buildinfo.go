@@ -8,12 +8,16 @@ var (
 	_buildTag        string
 	_buildUser       string
 	_buildHost       string
-	_buildTime       string
+	_buildTime       int64
 
 	// _buildGitVersion      string // 构建git 版本
 	// _buildGitBranch       string // 构建git branch
 	// _buildGitLastCommitId string
 )
+
+// func init() {
+// 	// _buildTime = strings.Replace(_buildTime, "--", " ", 1)
+// }
 
 // BuildVersion get buildVersion
 func BuildVersion() string {
@@ -46,21 +50,6 @@ func BuildTag() string {
 }
 
 // BuildTime get buildTime
-func BuildTime() string {
+func BuildTime() int64 {
 	return _buildTime
 }
-
-// // BuildGitVersion get buildGitVersion
-// func BuildGitVersion() string {
-// 	return _buildGitVersion
-// }
-
-// // BuildGitBranch get buildTime
-// func BuildGitBranch() string {
-// 	return _buildGitBranch
-// }
-
-// // BuildGitLastCommitId get buildTime
-// func BuildGitLastCommitId() string {
-// 	return _buildGitLastCommitId
-// }
