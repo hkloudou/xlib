@@ -2,7 +2,6 @@ package xruntime
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/hkloudou/xlib/xcolor"
 )
@@ -33,8 +32,8 @@ func PrintInfo() {
 	fmt.Printf("%-20s : %s\n", xcolor.Green("tag"), xcolor.Blue(_buildTag))
 	fmt.Printf("%-20s : %s\n", xcolor.Green("user"), xcolor.Blue(_buildUser))
 	fmt.Printf("%-20s : %s\n", xcolor.Green("host"), xcolor.Blue(_buildHost))
-	fmt.Printf("%-20s : %s\n", xcolor.Green("time"), xcolor.Blue(fmt.Sprintf("%d", _buildTime)))
-	fmt.Printf("%-20s : %s\n", xcolor.Green("time"), xcolor.Blue(time.Unix(_buildTime, 0).String()))
+	fmt.Printf("%-20s : %s\n", xcolor.Green("time"), xcolor.Blue(fmt.Sprintf("%d", buildTime.Unix())))
+	fmt.Printf("%-20s : %s\n", xcolor.Green("time"), xcolor.Blue(buildTime.Local().String()))
 	fmt.Printf("%-20s : %s\n", xcolor.Green("status"), xcolor.Blue(_buildStatus))
 
 	// fmt.Printf("%-20s : %s\n", xcolor.Green("git"), xcolor.Red(_buildGitVersion))

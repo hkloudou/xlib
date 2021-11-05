@@ -1,5 +1,10 @@
 package xruntime
 
+import (
+	"strconv"
+	"time"
+)
+
 // build info
 var (
 	_buildVersion    string
@@ -8,16 +13,19 @@ var (
 	_buildTag        string
 	_buildUser       string
 	_buildHost       string
-	_buildTime       int64
+	_buildTime       string
+	buildTime        time.Time
 
 	// _buildGitVersion      string // 构建git 版本
 	// _buildGitBranch       string // 构建git branch
 	// _buildGitLastCommitId string
 )
 
-// func init() {
-// 	// _buildTime = strings.Replace(_buildTime, "--", " ", 1)
-// }
+func init() {
+	if number, err := strconv.Atoi(_buildTime); err == nil {
+		buildTime = time.Unix(int64(number), 0)
+	}
+}
 
 // BuildVersion get buildVersion
 func BuildVersion() string {
@@ -50,6 +58,6 @@ func BuildTag() string {
 }
 
 // BuildTime get buildTime
-func BuildTime() int64 {
-	return _buildTime
+func BuildTime() time.Time {
+	return buildTime
 }
