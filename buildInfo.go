@@ -2,6 +2,7 @@ package xlib
 
 import (
 	"fmt"
+	"runtime/debug"
 
 	"github.com/hkloudou/xlib/xcolor"
 )
@@ -16,7 +17,19 @@ var (
 	_buildGitVersion      string // 构建git 版本
 	_buildGitBranch       string // 构建git branch
 	_buildGitLastCommitId string
+	xlibVersion           string
 )
+
+func init() {
+	info, ok := debug.ReadBuildInfo()
+	if ok {
+		for _, value := range info.Deps {
+			if value.Path == "github.com/hkloudou/xlib" {
+				xlibVersion = value.Version
+			}
+		}
+	}
+}
 
 // BuildAppVersion get buildAppVersion
 func BuildAppVersion() string {
@@ -59,7 +72,7 @@ func BuildGitLastCommitId() string {
 }
 
 func PrintBuildInfo() {
-	fmt.Printf("%s\n", xcolor.Yellow("🧰🔨build info"))
+	fmt.Printf("%-20s : %s\n", fmt.Sprintf("xlib(%s)", xlibVersion), xcolor.Yellow("🧰🔨build info"))
 	fmt.Printf("%-20s : %s\n", xcolor.Green("buildAppVersion"), xcolor.Blue(_buildAppVersion))
 	fmt.Printf("%-20s : %s\n", xcolor.Green("BuildUser"), xcolor.Blue(_buildUser))
 	fmt.Printf("%-20s : %s\n", xcolor.Green("BuildHost"), xcolor.Blue(_buildHost))
