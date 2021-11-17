@@ -10,6 +10,7 @@ import (
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -19,7 +20,8 @@ import (
 
 //go:embed views
 var views embed.FS
-var basedir = "~/.mutual-cert/ca"
+var home, _ = os.UserHomeDir()
+var basedir, _ = filepath.Abs(home + "/.mutual-cert/ca")
 
 func getList() []string {
 	arr := make([]string, 0)
@@ -37,6 +39,7 @@ func getList() []string {
 }
 
 func main() {
+	log.Println("basedir", basedir)
 	r := gin.Default()
 	tmpl := template.Must(template.New("").ParseFS(views, "views/*"))
 	r.SetHTMLTemplate(tmpl)
