@@ -139,7 +139,7 @@ func ReadPEMCert(pemcert, pemkey []byte) (*x509.Certificate, interface{}, error)
 		// os.Exit(1)
 		return nil, nil, e
 	}
-	key, e := x509.ParsePKCS8PrivateKey(kpb.Bytes)
+	key, e := x509.ParseECPrivateKey(kpb.Bytes)
 	if e != nil {
 		fmt.Println("parsekey:", e.Error())
 		// os.Exit(1)

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<title>Online cert genarate</title>
+	<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+	<style>
+		.item{
+			margin: 10px 0px;
+		}
+	</style>
+</head>
+
+<body>
+	<form action="/ca/create" method="get">
+		<input class="item" name="cn" type="text" placeholder="common name">
+		<input class="item" type="submit" value="create ca cert">
+	</form>
+	<form action="download/server" method="post">
+		<select class="item" name="ca">
+			{{range $i,$e := .list}}
+				<option value ="{{$e}}">{{$e}}</option>
+			{{end}}
+		</select>
+		<input class="item" name="name" type="text" placeholder="common name">
+		<textarea class="item" name="dns" style="width: 100%; height: 50px;" placeholder="please input dns list"></textarea>
+		<textarea class="item" name="ip" style="width: 100%; height: 50px;" placeholder="please input ip list"></textarea>
+		<input class="item" type="submit" value="download server cert">
+	</form>
+
+	<form action="download/client" method="post">
+		<select class="item" name="ca">
+			{{range $i,$e := .list}}
+				<option value ="{{$e}}">{{$e}}</option>
+			{{end}}
+		</select>
+		<input class="item" name="name" type="text" placeholder="common name">
+		<input class="item" type="submit" value="download client cert">
+	</form>
+</body>
+</html>
