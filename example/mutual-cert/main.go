@@ -19,10 +19,11 @@ import (
 
 //go:embed views
 var views embed.FS
+var basedir = "~/.mutual-cert/ca"
 
 func getList() []string {
 	arr := make([]string, 0)
-	dir_list, e := ioutil.ReadDir("ca/")
+	dir_list, e := ioutil.ReadDir(basedir)
 	if e != nil {
 		fmt.Println("read dir error")
 		return nil
@@ -46,8 +47,7 @@ func main() {
 	})
 	r.GET("/", func(c *gin.Context) {
 		c.HTML(http.StatusOK, "index.html", gin.H{
-			"title": "xx",
-			"list":  getList(),
+			"list": getList(),
 		})
 	})
 	r.POST("/download/server", func(c *gin.Context) {
@@ -98,17 +98,17 @@ func main() {
 			return
 		}
 
-		if !IsDir(fmt.Sprintf("./ca/%s/", ca)) {
+		if !IsDir(fmt.Sprintf(basedir+"/%s/", ca)) {
 			c.AbortWithStatusJSON(200, gin.H{"err": "ca not exist"})
 			return
 		}
 		if cert, err := xcert.NewCert(); err != nil {
 			c.AbortWithStatusJSON(200, gin.H{"err": "ca key not exist"})
 			return
-		} else if caCertByte, err := ioutil.ReadFile(fmt.Sprintf("./ca/%s/ca.pem", ca)); err != nil {
+		} else if caCertByte, err := ioutil.ReadFile(fmt.Sprintf(basedir+"/%s/ca.pem", ca)); err != nil {
 			c.AbortWithStatusJSON(200, gin.H{"err": "ca not exist"})
 			return
-		} else if caKeyByte, err := ioutil.ReadFile(fmt.Sprintf("./ca/%s/ca.key", ca)); err != nil {
+		} else if caKeyByte, err := ioutil.ReadFile(fmt.Sprintf(basedir+"/%s/ca.key", ca)); err != nil {
 			c.AbortWithStatusJSON(200, gin.H{"err": "ca key not exist"})
 			return
 		} else if caCert, caKey, err := readPEMCert(caCertByte, caKeyByte); err != nil {
@@ -152,17 +152,17 @@ func main() {
 			return
 		}
 
-		if !IsDir(fmt.Sprintf("./ca/%s/", ca)) {
+		if !IsDir(fmt.Sprintf(basedir+"/%s/", ca)) {
 			c.AbortWithStatusJSON(200, gin.H{"err": "ca not exist"})
 			return
 		}
 		if cert, err := xcert.NewCert(); err != nil {
 			c.AbortWithStatusJSON(200, gin.H{"err": "ca key not exist"})
 			return
-		} else if caCertByte, err := ioutil.ReadFile(fmt.Sprintf("./ca/%s/ca.pem", ca)); err != nil {
+		} else if caCertByte, err := ioutil.ReadFile(fmt.Sprintf(basedir+"/%s/ca.pem", ca)); err != nil {
 			c.AbortWithStatusJSON(200, gin.H{"err": "ca not exist"})
 			return
-		} else if caKeyByte, err := ioutil.ReadFile(fmt.Sprintf("./ca/%s/ca.key", ca)); err != nil {
+		} else if caKeyByte, err := ioutil.ReadFile(fmt.Sprintf(basedir+"/%s/ca.key", ca)); err != nil {
 			c.AbortWithStatusJSON(200, gin.H{"err": "ca key not exist"})
 			return
 		} else if caCert, caKey, err := readPEMCert(caCertByte, caKeyByte); err != nil {
@@ -205,19 +205,19 @@ func main() {
 			c.AbortWithStatusJSON(200, gin.H{"err": "parame cn not match exp:" + ee})
 			return
 		}
-		if IsDir(fmt.Sprintf("./ca/%s/", name)) {
+		if IsDir(fmt.Sprintf(basedir+"/%s/", name)) {
 			c.AbortWithStatusJSON(200, gin.H{"err": "already exist"})
 			return
 		}
-		os.MkdirAll(fmt.Sprintf("./ca/%s/", name), 0777)
+		os.MkdirAll(fmt.Sprintf(basedir+"/%s/", name), 0777)
 		cert, err := xcert.NewCert()
 		if err != nil {
 			c.AbortWithError(500, err)
 		} else if err := cert.SignCa(pkix.Name{CommonName: name}); err != nil {
 			c.AbortWithError(500, err)
-		} else if err := ioutil.WriteFile(fmt.Sprintf("./ca/%s/ca.pem", name), cert.Pub.Bytes(), 0644); err != nil {
+		} else if err := ioutil.WriteFile(fmt.Sprintf(basedir+"/%s/ca.pem", name), cert.Pub.Bytes(), 0644); err != nil {
 			c.AbortWithError(500, err)
-		} else if err := ioutil.WriteFile(fmt.Sprintf("./ca/%s/ca.key", name), cert.Pri.Bytes(), 0644); err != nil {
+		} else if err := ioutil.WriteFile(fmt.Sprintf(basedir+"/%s/ca.key", name), cert.Pri.Bytes(), 0644); err != nil {
 			c.AbortWithError(500, err)
 		} else {
 			c.Redirect(302, "/")

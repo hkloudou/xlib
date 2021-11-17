@@ -1,4 +1,4 @@
-module cert
+module mutual-cert
 
 go 1.17
 
