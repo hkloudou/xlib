@@ -142,16 +142,28 @@ func main() {
 	})
 
 	r.POST("/download/client", func(c *gin.Context) {
+		/*
+
+		 */
 		ee := `^[0-9a-zA-Z ]+$`
 		reg := regexp.MustCompile(`^[0-9a-zA-Z ]+$`)
 		name := strings.TrimSpace(c.PostForm("name"))
+		sn := strings.TrimSpace(c.PostForm("sn"))
 		ca := c.PostForm("ca")
 
 		if name == "" {
-			c.AbortWithStatusJSON(200, gin.H{"err": "parame cn not found"})
+			c.AbortWithStatusJSON(200, gin.H{"err": "parame name not found"})
 			return
 		} else if !reg.MatchString(name) {
 			c.AbortWithStatusJSON(200, gin.H{"err": "parame name not match exp:" + ee})
+			return
+		}
+
+		if sn == "" {
+			c.AbortWithStatusJSON(200, gin.H{"err": "parame sn not found"})
+			return
+		} else if !reg.MatchString(sn) {
+			c.AbortWithStatusJSON(200, gin.H{"err": "parame sn not match exp:" + ee})
 			return
 		}
 
@@ -173,7 +185,14 @@ func main() {
 			c.AbortWithStatusJSON(200, gin.H{"err": "ca err"})
 			return
 		} else if err := cert.Sign(false, caCert, caKey, pkix.Name{
-			CommonName: name,
+			CommonName:   name,
+			SerialNumber: sn,
+			// ExtraNames: []pkix.AttributeTypeAndValue{
+			// 	// pkix.AttributeTypeAndValue{}
+			// },
+			// ExtraNames: []pkix.AttributeTypeAndValue{
+			// 	// pkix.
+			// },
 		}, nil, nil); err != nil {
 			log.Println("err", err)
 			c.AbortWithStatusJSON(200, gin.H{"err": "sign err"})
