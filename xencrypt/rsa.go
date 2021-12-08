@@ -9,50 +9,50 @@ import (
 	"errors"
 )
 
-type XRsaEncrypter struct {
+type RsaEncrypter struct {
 	pub *rsa.PublicKey
 	pri *rsa.PrivateKey
 }
 
-func NewXRsaEncrypter(pri *rsa.PrivateKey, pub *rsa.PublicKey) *XRsaEncrypter {
-	return &XRsaEncrypter{
+func NewRsaEncrypter(pri *rsa.PrivateKey, pub *rsa.PublicKey) *RsaEncrypter {
+	return &RsaEncrypter{
 		pri: pri,
 		pub: pub,
 	}
 }
 
-func NewXRsaEncrypterWithPrivateBytesHard(pri []byte) *XRsaEncrypter {
-	x, err := NewXRsaEncrypterWithPrivateBytes(pri)
+func NewRsaEncrypterWithPrivateBytesHard(pri []byte) *RsaEncrypter {
+	x, err := NewRsaEncrypterWithPrivateBytes(pri)
 	if err != nil {
 		panic(err)
 	}
 	return x
 }
 
-func NewXRsaEncrypterWithPublicBytesHard(pub []byte) *XRsaEncrypter {
-	x, err := NewXRsaEncrypterWithPublicBytes(pub)
+func NewRsaEncrypterWithPublicBytesHard(pub []byte) *RsaEncrypter {
+	x, err := NewRsaEncrypterWithPublicBytes(pub)
 	if err != nil {
 		panic(err)
 	}
 	return x
 }
 
-func NewXRsaEncrypterWithPrivateBytes(pri []byte) (*XRsaEncrypter, error) {
+func NewRsaEncrypterWithPrivateBytes(pri []byte) (*RsaEncrypter, error) {
 	block, _ := pem.Decode(pri)
 	if block == nil {
-		return nil, errors.New("private key error!")
+		return nil, errors.New("private key error")
 	}
 	priv, err := x509.ParsePKCS1PrivateKey(block.Bytes) //解析pem.Decode（）返回的Block指针实例
 	if err != nil {
 		return nil, err
 	}
-	return &XRsaEncrypter{
+	return &RsaEncrypter{
 		pri: priv,
 		pub: &priv.PublicKey,
 	}, nil
 }
 
-func NewXRsaEncrypterWithPublicBytes(pub []byte) (*XRsaEncrypter, error) {
+func NewRsaEncrypterWithPublicBytes(pub []byte) (*RsaEncrypter, error) {
 	block, _ := pem.Decode(pub)
 	if block == nil {
 		return nil, errors.New("public key error")
@@ -61,13 +61,13 @@ func NewXRsaEncrypterWithPublicBytes(pub []byte) (*XRsaEncrypter, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &XRsaEncrypter{
+	return &RsaEncrypter{
 		pub: pubInterface.(*rsa.PublicKey),
 	}, nil
 }
 
 // EncodeOAEP 可变长的数据加密
-func (m *XRsaEncrypter) EncodeOAEP(origData []byte) ([]byte, error) {
+func (m *RsaEncrypter) EncodeOAEP(origData []byte) ([]byte, error) {
 	hash := sha256.New()
 	msgLen := len(origData)
 	step := m.pub.Size() - 2*hash.Size() - 2
@@ -91,9 +91,9 @@ func (m *XRsaEncrypter) EncodeOAEP(origData []byte) ([]byte, error) {
 }
 
 // DecodeOAEP 可变长的RSA数据解密
-func (m *XRsaEncrypter) DecodeOAEP(ciphertext []byte) ([]byte, error) {
+func (m *RsaEncrypter) DecodeOAEP(ciphertext []byte) ([]byte, error) {
 	if m.pri == nil {
-		return nil, errors.New("Can't decode without private key")
+		return nil, errors.New("can't decode without private key")
 	}
 	hash := sha256.New()
 	msgLen := len(ciphertext)
