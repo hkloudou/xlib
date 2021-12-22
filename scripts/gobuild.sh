@@ -1,4 +1,28 @@
 #!/bin/bash
+
+# WARNING: DO NOT EDIT, THIS FILE IS PROBABLY A COPY
+#
+# The original version of this file is located in the https://github.com/istio/common-files repo.
+# If you're looking at this file in a different repo and want to make a change, please go to the
+# common-files repo, make the change there and check it in. Then come back to this repo and run
+# "make update-common".
+
+# Copyright Istio Authors. All Rights Reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+# This script builds and version stamps the output
+
 VERBOSE=${VERBOSE:-"0"}
 V=""
 if [[ "${VERBOSE}" == "1" ]];then
@@ -18,8 +42,8 @@ set -e
 GOBINARY=${GOBINARY:-go}
 # GOPKG="$(go env GOPATH)/pkg"
 BUILDINFO=${BUILDINFO:-""}
-STATIC=${STATIC:-1}
-LDFLAGS="-s -w -extldflags -static"
+# STATIC=${STATIC:-1}
+LDFLAGS=${GOBUILDFLAGS:-"-s -w"}
 GOBUILDFLAGS=${GOBUILDFLAGS:-""}
 GCFLAGS=${GCFLAGS:-}
 
@@ -27,10 +51,7 @@ GCFLAGS=${GCFLAGS:-}
 IFS=' ' read -r -a GOBUILDFLAGS_ARRAY <<< "$GOBUILDFLAGS"
 
 GCFLAGS=${GCFLAGS:-}
-
-if [[ "${STATIC}" !=  "1" ]];then
-    LDFLAGS="-s -w"
-fi
+# export CGO_ENABLED=0
 
 # gather buildinfo if not already provided
 # For a release build BUILDINFO should be produced
@@ -39,6 +60,8 @@ if [[ -z ${BUILDINFO} ]];then
     BUILDINFO=$(mktemp)
     "${SCRIPTPATH}/report_build_info.sh"  ${APP_NAME}> "${BUILDINFO}"
 fi
+
+
 
 # BUILD LD_EXTRAFLAGS
 LD_EXTRAFLAGS=""
