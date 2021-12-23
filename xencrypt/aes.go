@@ -15,16 +15,13 @@ type AesEnDecrypter struct {
 	key     []byte
 	iv      []byte
 	wisepad bool
-	// pad AesEnDecrypterPadding
 }
 
-func NewAesEnDecrypter(key []byte, wisepad bool) *AesEnDecrypter {
+func NewAesEnDecrypter(key []byte, iv []byte, wisepad bool) *AesEnDecrypter {
 	return &AesEnDecrypter{
 		key:     key,
+		iv:      iv,
 		wisepad: wisepad,
-		// padding: padding,
-		// iv:  iv,
-		// pad: pd,
 	}
 }
 
@@ -60,7 +57,7 @@ func (m *AesEnDecrypter) Encode(src []byte) (ret []byte, err error) {
 		return nil, err
 	}
 	src = m.padding(src, block.BlockSize())
-	blockmode := cipher.NewCBCEncrypter(block, m.key)
+	blockmode := cipher.NewCBCEncrypter(block, m.iv)
 	blockmode.CryptBlocks(src, src)
 	return src, nil
 }
@@ -77,7 +74,7 @@ func (m *AesEnDecrypter) Decode(src []byte) (ret []byte, err error) {
 	if err != nil {
 		return nil, err
 	}
-	blockmode := cipher.NewCBCDecrypter(block, m.key)
+	blockmode := cipher.NewCBCDecrypter(block, m.iv)
 	blockmode.CryptBlocks(src, src)
 	src = m.unpadding(src, block.BlockSize())
 	return src, nil
