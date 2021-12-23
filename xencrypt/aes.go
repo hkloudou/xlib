@@ -13,7 +13,7 @@ const AesEnDecrypterPaddingNO AesEnDecrypterPadding = 0
 
 type AesEnDecrypter struct {
 	key []byte
-	// iv  []byte
+	iv  []byte
 	// pad AesEnDecrypterPadding
 }
 
@@ -29,17 +29,17 @@ func padding(src []byte, blocksize int) []byte {
 	padnum := blocksize - len(src)%blocksize
 	pad := bytes.Repeat([]byte{byte(padnum)}, padnum)
 
-	if padnum == blocksize {
-		pad = []byte{}
-	}
+	// if padnum == blocksize {
+	// 	pad = []byte{}
+	// }
 	return append(src, pad...)
 }
 
 func unpadding(src []byte, blocksize int) []byte {
 	n := len(src)
-	if n == blocksize {
-		return src
-	}
+	// if n == blocksize {
+	// 	return src
+	// }
 	unpadnum := int(src[n-1])
 	return src[:n-unpadnum]
 }
