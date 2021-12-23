@@ -13,15 +13,15 @@ const AesEnDecrypterPaddingNO AesEnDecrypterPadding = 0
 
 type AesEnDecrypter struct {
 	key []byte
-	iv  []byte
-	pad AesEnDecrypterPadding
+	// iv  []byte
+	// pad AesEnDecrypterPadding
 }
 
-func NewAesEnDecrypter(key []byte, iv []byte, pd AesEnDecrypterPadding) *AesEnDecrypter {
+func NewAesEnDecrypter(key []byte) *AesEnDecrypter {
 	return &AesEnDecrypter{
 		key: key,
-		iv:  iv,
-		pad: pd,
+		// iv:  iv,
+		// pad: pd,
 	}
 }
 

@@ -9,6 +9,9 @@ import (
 
 func PKCS7Padding(ciphertext []byte, blockSize int) []byte {
 	padding := blockSize - len(ciphertext)%blockSize
+	if len(ciphertext)%blockSize == 0 {
+
+	}
 	log.Println("pad", blockSize, len(ciphertext), len(ciphertext)%blockSize)
 	padtext := bytes.Repeat([]byte{byte(padding)}, padding)
 	log.Println("padtext", padtext)
