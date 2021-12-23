@@ -29,6 +29,9 @@ func padding(src []byte, blocksize int) []byte {
 	padnum := blocksize - len(src)%blocksize
 	pad := bytes.Repeat([]byte{byte(padnum)}, padnum)
 
+	if padnum == blocksize {
+		pad = []byte{}
+	}
 	return append(src, pad...)
 }
 

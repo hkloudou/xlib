@@ -16,7 +16,7 @@ func Test_aes_1(t *testing.T) {
 	x2, _ := aa.Encode(d1)
 	fmt.Printf("x2:[%d]%2x\n", len(x2), x2)
 	x3, _ := aa.Decode(x2)
-	fmt.Printf("x3:[%d]%2x\n", len(x3), x3)
+	fmt.Printf("x3:[%d]%2x %s\n", len(x3), x3, string(x3))
 	// fmt.Printf("%2x", x2)
 	// c := make([]byte, aes.BlockSize+len(d1))
 	// iv := c[:aes.BlockSize]
