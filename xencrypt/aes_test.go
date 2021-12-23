@@ -12,7 +12,7 @@ var d1 = []byte("0123456789abcdef")
 
 func Test_aes_1(t *testing.T) {
 	// aes.BlockSize
-	aa := NewAesEnDecrypter(key)
+	aa := NewAesEnDecrypter(key, false)
 	x2, _ := aa.Encode(d1)
 	fmt.Printf("x2:[%d]%2x\n", len(x2), x2)
 	x3, _ := aa.Decode(x2)

@@ -12,14 +12,16 @@ type AesEnDecrypterPadding uint8
 const AesEnDecrypterPaddingNO AesEnDecrypterPadding = 0
 
 type AesEnDecrypter struct {
-	key []byte
-	iv  []byte
+	key     []byte
+	iv      []byte
+	padding bool
 	// pad AesEnDecrypterPadding
 }
 
-func NewAesEnDecrypter(key []byte) *AesEnDecrypter {
+func NewAesEnDecrypter(key []byte, padding bool) *AesEnDecrypter {
 	return &AesEnDecrypter{
-		key: key,
+		key:     key,
+		padding: padding,
 		// iv:  iv,
 		// pad: pd,
 	}
@@ -29,17 +31,17 @@ func padding(src []byte, blocksize int) []byte {
 	padnum := blocksize - len(src)%blocksize
 	pad := bytes.Repeat([]byte{byte(padnum)}, padnum)
 
-	// if padnum == blocksize {
-	// 	pad = []byte{}
-	// }
+	if padnum == blocksize {
+		pad = []byte{}
+	}
 	return append(src, pad...)
 }
 
 func unpadding(src []byte, blocksize int) []byte {
 	n := len(src)
-	// if n == blocksize {
-	// 	return src
-	// }
+	if n == blocksize {
+		return src
+	}
 	unpadnum := int(src[n-1])
 	return src[:n-unpadnum]
 }
@@ -56,7 +58,10 @@ func (m *AesEnDecrypter) Encode(src []byte) (ret []byte, err error) {
 	if err != nil {
 		return nil, err
 	}
-	src = padding(src, block.BlockSize())
+	if m.padding {
+		src = padding(src, block.BlockSize())
+	}
+
 	blockmode := cipher.NewCBCEncrypter(block, m.key)
 	blockmode.CryptBlocks(src, src)
 	return src, nil
@@ -76,6 +81,8 @@ func (m *AesEnDecrypter) Decode(src []byte) (ret []byte, err error) {
 	}
 	blockmode := cipher.NewCBCDecrypter(block, m.key)
 	blockmode.CryptBlocks(src, src)
-	src = unpadding(src, block.BlockSize())
+	if m.padding {
+		src = unpadding(src, block.BlockSize())
+	}
 	return src, nil
 }
