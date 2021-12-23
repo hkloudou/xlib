@@ -12,16 +12,16 @@ type AesEnDecrypterPadding uint8
 const AesEnDecrypterPaddingNO AesEnDecrypterPadding = 0
 
 type AesEnDecrypter struct {
-	key     []byte
-	iv      []byte
-	wisepad bool
+	key []byte
+	iv  []byte
+	// wisepad bool
 }
 
-func NewAesEnDecrypter(key []byte, iv []byte, wisepad bool) *AesEnDecrypter {
+func NewAesEnDecrypter(key []byte, iv []byte) *AesEnDecrypter {
 	return &AesEnDecrypter{
-		key:     key,
-		iv:      iv,
-		wisepad: wisepad,
+		key: key,
+		iv:  iv,
+		// wisepad: wisepad,
 	}
 }
 
@@ -29,17 +29,18 @@ func (m *AesEnDecrypter) padding(src []byte, blocksize int) []byte {
 	padnum := blocksize - len(src)%blocksize
 	pad := bytes.Repeat([]byte{byte(padnum)}, padnum)
 
-	if m.wisepad && padnum == blocksize {
-		pad = []byte{}
-	}
+	// if m.wisepad && padnum == blocksize {
+	// 	pad = []byte{}
+	// }
 	return append(src, pad...)
 }
 
 func (m *AesEnDecrypter) unpadding(src []byte, blocksize int) []byte {
 	n := len(src)
-	if m.wisepad && n == blocksize {
-		return src
-	}
+	//wisepad is notwork between source len = blocksize-1  and len=blocksize
+	// if m.wisepad && n == blocksize {
+	// 	return src
+	// }
 	unpadnum := int(src[n-1])
 	return src[:n-unpadnum]
 }
