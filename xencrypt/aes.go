@@ -35,8 +35,11 @@ func padding(src []byte, blocksize int) []byte {
 	return append(src, pad...)
 }
 
-func unpadding(src []byte) []byte {
+func unpadding(src []byte, blocksize int) []byte {
 	n := len(src)
+	if n == blocksize {
+		return src
+	}
 	unpadnum := int(src[n-1])
 	return src[:n-unpadnum]
 }
@@ -73,6 +76,6 @@ func (m *AesEnDecrypter) Decode(src []byte) (ret []byte, err error) {
 	}
 	blockmode := cipher.NewCBCDecrypter(block, m.key)
 	blockmode.CryptBlocks(src, src)
-	src = unpadding(src)
+	src = unpadding(src, block.BlockSize())
 	return src, nil
 }
