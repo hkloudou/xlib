@@ -51,6 +51,7 @@ func (m *memory[T]) Del(keys ...string) error {
 	return nil
 }
 
-func (m *memory[T]) Validator(fc func(obj *T) error) {
+func (m *memory[T]) Validator(fc func(obj *T) error) Cacher[T] {
 	m._validator = fc
+	return m
 }
