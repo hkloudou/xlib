@@ -35,3 +35,8 @@ func (m *cacherMixer[T]) Del(key ...string) error {
 	m.c1.Del(key...)
 	return nil
 }
+
+func (m *cacherMixer[T]) Validator(fc func(obj *T) error) {
+	m.c1.Validator(fc)
+	m.c2.Validator(fc)
+}

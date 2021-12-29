@@ -7,12 +7,13 @@ import (
 )
 
 func NewMemoryCacher[T any]() Cacher[T] {
-	return &memory[T]{_map: map[string]*T{}, _lock: sync.RWMutex{}}
+	return &memory[T]{_map: map[string]*T{}, _lock: sync.RWMutex{}, _validator: func(obj *T) error { return nil }}
 }
 
 type memory[T any] struct {
-	_map  map[string]*T
-	_lock sync.RWMutex
+	_map       map[string]*T
+	_lock      sync.RWMutex
+	_validator func(obj *T) error
 }
 
 func (m *memory[T]) Get(key string) (*T, error) {
@@ -37,4 +38,8 @@ func (m *memory[T]) Del(keys ...string) error {
 		delete(m._map, keys[i])
 	}
 	return nil
+}
+
+func (m *memory[T]) Validator(fc func(obj *T) error) {
+	m._validator = fc
 }
