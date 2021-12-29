@@ -11,7 +11,10 @@ type cacherMixer[T any] struct {
 }
 
 func NewCacheMixer[T any](c1 Cacher[T], c2 Cacher[T]) Cacher[T] {
-	return &cacherMixer[T]{}
+	return &cacherMixer[T]{
+		c1: c1,
+		c2: c2,
+	}
 }
 
 func (m *cacherMixer[T]) Get(key string) (*T, error) {
