@@ -19,17 +19,23 @@ type memory[T any] struct {
 func (m *memory[T]) Get(key string) (*T, error) {
 	m._lock.RLock()
 	defer m._lock.RUnlock()
-	if obj, found := m._map[key]; !found {
+	obj, found := m._map[key]
+	if !found {
 		return nil, fmt.Errorf("not found")
-	} else if err := m._validator(obj); err != nil {
-		return nil, err
-	} else {
-		return obj, nil
 	}
+	if m._validator != nil {
+		if err := m._validator(obj); err != nil {
+			return nil, err
+		}
+	}
+	return obj, nil
+
 }
 func (m *memory[T]) Set(key string, ttl time.Duration, obj *T) error {
-	if err := m._validator(obj); err != nil {
-		return err
+	if m._validator != nil {
+		if err := m._validator(obj); err != nil {
+			return err
+		}
 	}
 	m._lock.Lock()
 	defer m._lock.Unlock()
