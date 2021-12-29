@@ -21,11 +21,16 @@ func (m *memory[T]) Get(key string) (*T, error) {
 	defer m._lock.RUnlock()
 	if obj, found := m._map[key]; !found {
 		return nil, fmt.Errorf("not found")
+	} else if err := m._validator(obj); err != nil {
+		return nil, err
 	} else {
 		return obj, nil
 	}
 }
 func (m *memory[T]) Set(key string, ttl time.Duration, obj *T) error {
+	if err := m._validator(obj); err != nil {
+		return err
+	}
 	m._lock.Lock()
 	defer m._lock.Unlock()
 	m._map[key] = obj
