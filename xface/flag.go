@@ -15,8 +15,8 @@ var _lk = &sync.RWMutex{} //主要对_list
 
 func Config(app *xflag.App) {
 	app.Flags = append(app.Flags, Flags()...)
-	old := app.Action
-	app.Action = func(c *xflag.Context) error {
+	old := app.Before
+	app.Before = func(c *xflag.Context) error {
 		if err := FlagAction(c); err != nil {
 			return err
 		}
