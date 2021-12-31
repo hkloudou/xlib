@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/hkloudou/xlib/xflag"
+	"github.com/hkloudou/xlib/xruntime"
 )
 
 var _flags = sync.Map{}
@@ -56,6 +57,9 @@ func FlagGet[T any](name string) (*T, error) {
 func FlagAction(c *xflag.Context) (err error) {
 	_lk.RLock()
 	defer _lk.RUnlock()
+	if c.Bool("xlib_info") {
+		xruntime.PrintInfo()
+	}
 	for i := 0; i < len(_list); i++ {
 		name := _list[i]
 		if value, found := _flags.Load(name); !found {
@@ -81,6 +85,10 @@ func Flags() []xflag.Flag {
 		res := mt.Call(nil)
 		tmp = append(tmp, res[0].Interface().([]xflag.Flag)...)
 		return true
+	})
+	tmp = append(tmp, &xflag.BoolFlag{
+		Name:  "xlib_info",
+		Value: false,
 	})
 	return tmp
 }
