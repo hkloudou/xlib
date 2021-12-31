@@ -19,7 +19,9 @@ func Config(app *xflag.App) {
 	old := app.Before
 	app.Before = func(c *xflag.Context) error {
 		if old != nil {
-			return old(c)
+			if err := old(c); err != nil {
+				return err
+			}
 		}
 		if err := FlagAction(c); err != nil {
 			return err
