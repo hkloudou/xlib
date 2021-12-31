@@ -18,11 +18,11 @@ func Config(app *xflag.App) {
 	app.Flags = append(app.Flags, Flags()...)
 	old := app.Before
 	app.Before = func(c *xflag.Context) error {
-		if err := FlagAction(c); err != nil {
-			return err
-		}
 		if old != nil {
 			return old(c)
+		}
+		if err := FlagAction(c); err != nil {
+			return err
 		}
 		return nil
 	}
