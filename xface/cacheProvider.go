@@ -6,7 +6,7 @@ import (
 	"time"
 )
 
-func NewMemoryCacher[T any]() Cacher[T] {
+func NewMemoryCacher[T any]() Cache[T] {
 	return &memory[T]{_map: map[string]*T{}, _lock: sync.RWMutex{}, _validator: func(obj *T) error { return nil }}
 }
 
@@ -51,7 +51,7 @@ func (m *memory[T]) Del(keys ...string) error {
 	return nil
 }
 
-func (m *memory[T]) Validator(fc func(obj *T) error) Cacher[T] {
+func (m *memory[T]) Validator(fc func(obj *T) error) Cache[T] {
 	m._validator = fc
 	return m
 }
