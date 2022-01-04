@@ -30,6 +30,11 @@ func (m *cacherMixer[T]) Get(key string) (*T, error) {
 func (m *cacherMixer[T]) Set(key string, ttl time.Duration, obj *T) error {
 	err1 := m.c2.Set(key, ttl, obj)
 	err2 := m.c1.Set(key, ttl, obj)
+	if err1 != nil {
+		return err1
+	} else if err2 != nil {
+		return err2
+	}
 	return nil
 }
 
