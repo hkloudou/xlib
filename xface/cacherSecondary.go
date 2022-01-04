@@ -17,7 +17,7 @@ type cacherSecondary[T any] struct {
 func NewSecondaryCacher[T any](
 	l1 Cacher[T], l2 Cacher[T],
 	l1_Duration, l2_Duration time.Duration,
-) *cacherSecondary[T] {
+) Cacher[T] {
 	return &cacherSecondary[T]{
 		l1:          l1,
 		l2:          l2,
@@ -42,11 +42,26 @@ func (m *cacherSecondary[T]) Get(key string) (*T, error) {
 // Set
 // 1、先设置L2
 // 2、然后删除L1
-func (m *cacherSecondary[T]) Set(key string, obj *T) error {
-	if err := m.l2.Set(key, m.l2_Duration, obj); err != nil {
+func (m *cacherSecondary[T]) Set(key string, ttl time.Duration, obj *T) error {
+	if err := m.l2.Set(key, ttl, obj); err != nil {
 		return err
 	} else if err := m.l1.Del(key); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (m *cacherSecondary[T]) Del(key ...string) error {
+	if err := m.l1.Del(key...); err != nil {
+		return err
+	} else if m.l2.Del(key...); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *cacherSecondary[T]) Validator(fc func(obj *T) error) Cacher[T] {
+	m.l1.Validator(fc)
+	m.l2.Validator(fc)
+	return m
 }
