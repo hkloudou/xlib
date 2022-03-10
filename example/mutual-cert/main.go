@@ -159,13 +159,13 @@ func main() {
 			return
 		}
 
-		if sn == "" {
-			c.AbortWithStatusJSON(200, gin.H{"err": "parame sn not found"})
-			return
-		} else if !reg.MatchString(sn) {
-			c.AbortWithStatusJSON(200, gin.H{"err": "parame sn not match exp:" + ee})
-			return
-		}
+		// if sn == "" {
+		// 	c.AbortWithStatusJSON(200, gin.H{"err": "parame sn not found"})
+		// 	return
+		// } else if !reg.MatchString(sn) {
+		// 	c.AbortWithStatusJSON(200, gin.H{"err": "parame sn not match exp:" + ee})
+		// 	return
+		// }
 
 		if !IsDir(fmt.Sprintf(basedir+"/%s/", ca)) {
 			c.AbortWithStatusJSON(200, gin.H{"err": "ca not exist"})
