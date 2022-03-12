@@ -3,8 +3,8 @@ module mutual-cert
 go 1.17
 
 require (
-	github.com/gin-gonic/gin v1.7.7
-	github.com/hkloudou/xlib v1.0.47
+	github.com/gin-gonic/gin v1.7.1
+	github.com/hkloudou/xlib v1.0.48
 )
 
 require (
