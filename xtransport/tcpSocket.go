@@ -8,7 +8,7 @@ import (
 )
 
 type tcpSocket[T Writer] struct {
-	net.Conn
+	conn    net.Conn
 	timeout time.Duration
 	*session
 	obound chan T
@@ -16,7 +16,7 @@ type tcpSocket[T Writer] struct {
 }
 
 func (t *tcpSocket[T]) ConnectState() *tls.ConnectionState {
-	if c2, ok := t.Conn.(*tls.Conn); ok {
+	if c2, ok := t.conn.(*tls.Conn); ok {
 		tmp := c2.ConnectionState()
 		return &tmp
 	}
@@ -24,18 +24,18 @@ func (t *tcpSocket[T]) ConnectState() *tls.ConnectionState {
 }
 
 func (t *tcpSocket[T]) Local() string {
-	return t.Conn.LocalAddr().String()
+	return t.conn.LocalAddr().String()
 }
 
 func (t *tcpSocket[T]) Remote() string {
-	return t.Conn.RemoteAddr().String()
+	return t.conn.RemoteAddr().String()
 }
 
 func (t *tcpSocket[T]) Recv(fc func(r io.Reader) (T, error)) (T, error) {
 	if t.timeout > time.Duration(0) {
-		t.Conn.SetDeadline(time.Now().Add(t.timeout))
+		t.conn.SetDeadline(time.Now().Add(t.timeout))
 	}
-	return fc(t.Conn)
+	return fc(t.conn)
 }
 
 func (t *tcpSocket[T]) loop() {
@@ -46,9 +46,9 @@ func (t *tcpSocket[T]) loop() {
 	}()
 	for v := range t.obound {
 		if t.timeout > time.Duration(0) {
-			t.Conn.SetDeadline(time.Now().Add(t.timeout))
+			t.conn.SetDeadline(time.Now().Add(t.timeout))
 		}
-		if err := v.Write(t.Conn); err != nil {
+		if err := v.Write(t.conn); err != nil {
 			t.Close()
 			return
 		}
@@ -81,5 +81,5 @@ func (t *tcpSocket[T]) Close() error {
 	}
 	t.closed = true
 	close(t.obound)
-	return t.Conn.Close()
+	return t.conn.Close()
 }
