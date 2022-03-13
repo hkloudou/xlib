@@ -1,4 +1,4 @@
-package xarray
+package xtype
 
 import (
 	"encoding/json"
