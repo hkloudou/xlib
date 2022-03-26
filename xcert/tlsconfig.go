@@ -11,7 +11,6 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"reflect"
 	"strings"
 )
@@ -196,7 +195,7 @@ func ParseTlsConfig(caParame interface{}, certParame interface{}, keyParame inte
 	if pool != nil {
 		for i := 0; i < len(cert.ExtKeyUsage); i++ {
 			usage := cert.ExtKeyUsage[i]
-			log.Println("ext", usage)
+			// log.Println("ext", usage)
 			switch usage {
 			case x509.ExtKeyUsageClientAuth:
 				cfg.RootCAs = pool
