@@ -12,7 +12,6 @@ import (
 	"errors"
 	"fmt"
 	"net"
-	"reflect"
 	"time"
 )
 
@@ -57,9 +56,9 @@ func X509PemCertGenerate(priv crypto.Signer, tmpl x509.Certificate, usePKCS8 boo
 	var derBytes []byte
 	var err error
 
-	if parentCert != nil && !reflect.ValueOf(parentPriv).IsNil() {
+	if parentCert != nil && parentPriv != nil {
 		derBytes, err = x509.CreateCertificate(rand.Reader, &tmpl, parentCert, priv.Public(), parentPriv)
-	} else if parentCert == nil && reflect.ValueOf(parentPriv).IsNil() {
+	} else if parentCert == nil && parentPriv == nil {
 		derBytes, err = x509.CreateCertificate(rand.Reader, &tmpl, &tmpl, priv.Public(), priv)
 	} else {
 		return nil, nil, fmt.Errorf("parentCert and parentPriv should both nil, or both not empty")

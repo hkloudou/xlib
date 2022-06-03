@@ -13,4 +13,6 @@ func Test_x(t *testing.T) {
 	tmp := NewRsa256()
 	// tmp.
 	log.Println("type", reflect.TypeOf(tmp.Public()))
+
+	log.Println(reflect.TypeOf(nil))
 }
