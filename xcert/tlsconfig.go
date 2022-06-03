@@ -15,13 +15,13 @@ import (
 	"strings"
 )
 
-func ParseCertPair(certParame, keyParame interface{}) (*x509.Certificate, crypto.PrivateKey, error) {
+func ParsePemCertPair(certParame, keyParame interface{}) (*x509.Certificate, crypto.PrivateKey, error) {
 	fail := func(err error) (*x509.Certificate, crypto.PrivateKey, error) { return nil, nil, err }
-	_, cert, err := ParsePublicCert(certParame)
+	_, cert, err := ParsePemPublicCert(certParame)
 	if err != nil {
 		return fail(err)
 	}
-	key, err := ParsePrivateCert(keyParame)
+	key, err := ParsePemPrivateCert(keyParame)
 	if err != nil {
 		return fail(err)
 	}
@@ -32,7 +32,7 @@ func ParseCertPair(certParame, keyParame interface{}) (*x509.Certificate, crypto
 Public Key
 */
 //ParsePublicCert []byte string *x509.Certificate
-func ParsePublicCert(cert interface{}) ([][]byte, *x509.Certificate, error) {
+func ParsePemPublicCert(cert interface{}) ([][]byte, *x509.Certificate, error) {
 	switch cert.(type) {
 	case string:
 		if cert.(string) == "" {
@@ -92,7 +92,7 @@ func readPemPublicCert(certPEMBlock []byte) ([][]byte, *x509.Certificate, error)
 Private Key
 */
 //ReadPrivateCert []byte string *rsa.PrivateKey, *ecdsa.PrivateKey, ed25519.PrivateKey
-func ParsePrivateCert(cert interface{}) (crypto.PrivateKey, error) {
+func ParsePemPrivateCert(cert interface{}) (crypto.PrivateKey, error) {
 	switch cert.(type) {
 	case string:
 		bt, err := ioutil.ReadFile(cert.(string))
@@ -128,7 +128,7 @@ func readPemPrivateCert(keyPEMBlock []byte) (crypto.PrivateKey, error) {
 		}
 		skippedBlockTypes = append(skippedBlockTypes, keyDERBlock.Type)
 	}
-	privateKey, err := parsePrivateKey(keyDERBlock.Bytes)
+	privateKey, err := parsePemPrivateKey(keyDERBlock.Bytes)
 	if err != nil {
 		return fail(err)
 	}
@@ -139,7 +139,7 @@ func readPemPrivateCert(keyPEMBlock []byte) (crypto.PrivateKey, error) {
 // Attempt to parse the given private key DER block. OpenSSL 0.9.8 generates
 // PKCS #1 private keys by default, while OpenSSL 1.0.0 generates PKCS #8 keys.
 // OpenSSL ecparam generates SEC1 EC private keys for ECDSA. We try all three.
-func parsePrivateKey(der []byte) (crypto.PrivateKey, error) {
+func parsePemPrivateKey(der []byte) (crypto.PrivateKey, error) {
 	if key, err := x509.ParsePKCS1PrivateKey(der); err == nil {
 		return key, nil
 	}
@@ -158,12 +158,12 @@ func parsePrivateKey(der []byte) (crypto.PrivateKey, error) {
 	return nil, errors.New("xcert: failed to parse private key")
 }
 
-func ParseTlsConfig(caParame interface{}, certParame interface{}, keyParame interface{}) (*tls.Config, error) {
+func ParsePemTlsConfig(caParame interface{}, certParame interface{}, keyParame interface{}) (*tls.Config, error) {
 	fail := func(err error) (*tls.Config, error) { return nil, err }
 	var pool *x509.CertPool
 	cfg := &tls.Config{}
 	cfg.MinVersion = tls.VersionTLS13
-	_, ca, err := ParsePublicCert(caParame)
+	_, ca, err := ParsePemPublicCert(caParame)
 	if err != nil {
 		return fail(err)
 	}
@@ -174,7 +174,7 @@ func ParseTlsConfig(caParame interface{}, certParame interface{}, keyParame inte
 		pool = x509.NewCertPool()
 		pool.AddCert(ca)
 	}
-	certBytes, cert, err := ParsePublicCert(certParame)
+	certBytes, cert, err := ParsePemPublicCert(certParame)
 	if err != nil {
 		return fail(err)
 	}
@@ -218,7 +218,7 @@ func ParseTlsConfig(caParame interface{}, certParame interface{}, keyParame inte
 		cfg.InsecureSkipVerify = true
 	}
 
-	key, err := ParsePrivateCert(keyParame)
+	key, err := ParsePemPrivateCert(keyParame)
 	if err != nil {
 		return fail(err)
 	}

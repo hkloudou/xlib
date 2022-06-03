@@ -49,7 +49,7 @@ func X509Template(opts ...tmplOption) x509.Certificate {
 	return template
 }
 
-func X509PemCertGenerate(priv crypto.Signer, tmpl x509.Certificate, usePKCS8 bool, parentCert *x509.Certificate, parentPriv any) ([]byte, []byte, error) {
+func X509PemCertGenerate(priv crypto.Signer, tmpl x509.Certificate, usePKCS8 bool, parentCert *x509.Certificate, parentPriv interface{}) ([]byte, []byte, error) {
 	// if len(tmpl.SubjectKeyId) == 0 {
 	// 	tmpl.SubjectKeyId = priKeyHash(priv)
 	// }
