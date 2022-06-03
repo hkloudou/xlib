@@ -77,7 +77,10 @@ func X509PemCertGenerate(priv crypto.Signer, tmpl x509.Certificate, usePKCS8 boo
 		if err != nil {
 			return nil, nil, err
 		}
-		pem.Encode(keyOut, &pem.Block{Type: "PRIVATE KEY", Bytes: b})
+		err = pem.Encode(keyOut, &pem.Block{Type: "PRIVATE KEY", Bytes: b})
+		if err != nil {
+			return nil, nil, err
+		}
 		return certOut.Bytes(), keyOut.Bytes(), nil
 	}
 
@@ -88,18 +91,27 @@ func X509PemCertGenerate(priv crypto.Signer, tmpl x509.Certificate, usePKCS8 boo
 		if err != nil {
 			return nil, nil, err
 		}
-		pem.Encode(keyOut, &pem.Block{Type: "EC PRIVATE KEY", Bytes: b})
+		err = pem.Encode(keyOut, &pem.Block{Type: "EC PRIVATE KEY", Bytes: b})
+		if err != nil {
+			return nil, nil, err
+		}
 		return certOut.Bytes(), keyOut.Bytes(), nil
 	case *rsa.PrivateKey:
 		b := x509.MarshalPKCS1PrivateKey(priv)
-		pem.Encode(keyOut, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: b})
+		err = pem.Encode(keyOut, &pem.Block{Type: "RSA PRIVATE KEY", Bytes: b})
+		if err != nil {
+			return nil, nil, err
+		}
 		return certOut.Bytes(), keyOut.Bytes(), nil
 	case ed25519.PrivateKey:
 		b, err := x509.MarshalPKCS8PrivateKey(priv)
 		if err != nil {
 			return nil, nil, err
 		}
-		pem.Encode(keyOut, &pem.Block{Type: "PRIVATE KEY", Bytes: b})
+		err = pem.Encode(keyOut, &pem.Block{Type: "PRIVATE KEY", Bytes: b})
+		if err != nil {
+			return nil, nil, err
+		}
 		return certOut.Bytes(), keyOut.Bytes(), nil
 	default:
 		return nil, nil, errors.New("types are currently supported: *rsa.PrivateKey, *ecdsa.PrivateKey and ed25519.PrivateKey")
