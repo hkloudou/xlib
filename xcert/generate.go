@@ -12,6 +12,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"reflect"
 	"time"
 )
 
@@ -49,16 +50,16 @@ func X509Template(opts ...tmplOption) x509.Certificate {
 	return template
 }
 
-func X509PemCertGenerate(priv crypto.Signer, tmpl x509.Certificate, usePKCS8 bool, parentCert *x509.Certificate, parentPriv interface{}) ([]byte, []byte, error) {
+func X509PemCertGenerate(priv crypto.Signer, tmpl x509.Certificate, usePKCS8 bool, parentCert *x509.Certificate, parentPriv any) ([]byte, []byte, error) {
 	// if len(tmpl.SubjectKeyId) == 0 {
 	// 	tmpl.SubjectKeyId = priKeyHash(priv)
 	// }
 	var derBytes []byte
 	var err error
 
-	if parentCert != nil && parentPriv != nil {
+	if parentCert != nil && !reflect.ValueOf(parentPriv).IsNil() {
 		derBytes, err = x509.CreateCertificate(rand.Reader, &tmpl, parentCert, priv.Public(), parentPriv)
-	} else if parentCert == nil && &parentPriv == nil {
+	} else if parentCert == nil && reflect.ValueOf(parentPriv).IsNil() {
 		derBytes, err = x509.CreateCertificate(rand.Reader, &tmpl, &tmpl, priv.Public(), priv)
 	} else {
 		return nil, nil, fmt.Errorf("parentCert and parentPriv should both nil, or both not empty")
