@@ -21,11 +21,13 @@ func X509Template(opts ...tmplOption) x509.Certificate {
 		expired:     time.Hour * 24 * 365,
 		notBefore:   -time.Minute * 5,
 		keyUsage:    x509.KeyUsageDigitalSignature | x509.KeyUsageDataEncipherment,
-		extKeyUsage: []x509.ExtKeyUsage{x509.ExtKeyUsageServerAuth},
+		extKeyUsage: []x509.ExtKeyUsage{},
 	}
+	//x509.KeyUsageCertSign
 	for _, o := range opts {
 		o(options)
 	}
+
 	notBefore := time.Now().Add(options.notBefore)
 	notAfter := notBefore.Add(options.expired)
 	template := x509.Certificate{
