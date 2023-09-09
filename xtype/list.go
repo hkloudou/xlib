@@ -96,7 +96,7 @@ func (l *List[T]) Filter(fn func(T) bool) *List[T] {
 	lnew := NewList[T](l.mu != nil)
 	for i := 0; i < len(l.l); i++ {
 		if fn(l.l[i]) {
-			lnew.l = append(lnew.l)
+			lnew.l = append(lnew.l, l.l[i])
 		}
 	}
 	return lnew
@@ -143,9 +143,10 @@ func (l *List[T]) Includes(items ...T) bool {
 	if len(l.l) == 0 || len(items) == 0 {
 		return false
 	}
-	for i := 0; i < len(l.l); i++ {
+
+	for j := 0; j < len(items); j++ {
 		found := false
-		for j := 0; j < len(items); j++ {
+		for i := 0; i < len(l.l); i++ {
 			if items[j] == l.l[i] {
 				found = true
 				break
@@ -234,12 +235,12 @@ func (l *List[T]) Shift() *List[T] {
 
 func (l *List[T]) insertAt(pos int, v T) {
 	l.l, l.l[0] = append(l.l[:pos+1], l.l[pos:]...), v
-	return
+	// return
 }
 
 func (l *List[T]) remove(i int) {
 	l.l = l.l[:i+copy(l.l[i:], l.l[i+1:])]
-	return
+	// return
 }
 
 func (l *List[T]) Some(fn func(val T) bool) bool {
