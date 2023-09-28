@@ -302,8 +302,8 @@ func (l *List[T]) Distant() *List[T] {
 }
 
 func (l *List[T]) Sort(less func(i T, j T) bool) *List[T] {
-	l.rLock()
-	defer l.rUnlock()
+	l.lock()
+	defer l.unlock()
 	sort.SliceStable(l.l, func(i, j int) bool {
 		return less(l.l[i], l.l[j])
 	})
