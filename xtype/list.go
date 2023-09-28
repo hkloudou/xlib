@@ -2,6 +2,7 @@ package xtype
 
 import (
 	"encoding/json"
+	"sort"
 	"sync"
 )
 
@@ -298,6 +299,15 @@ func (l *List[T]) Distant() *List[T] {
 		}
 	}
 	return ll
+}
+
+func (l *List[T]) Sort(less func(i T, j T) bool) *List[T] {
+	l.rLock()
+	defer l.rUnlock()
+	sort.SliceStable(l.l, func(i, j int) bool {
+		return less(l.l[i], l.l[j])
+	})
+	return l
 }
 
 func (l *List[T]) Clone() *List[T] {
