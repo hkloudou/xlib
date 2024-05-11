@@ -6,6 +6,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/hkloudou/xlib/xlog"
 	"github.com/hkloudou/xlib/xmath"
 	"github.com/hkloudou/xlib/xsync"
 )
@@ -298,8 +299,8 @@ func (cs *cacheStat) statLoop() {
 		if total == 0 {
 			continue
 		}
-		// percent := 100 * float32(hit) / float32(total)
-		// logx.Statf("cache(%s) - qpm: %d, hit_ratio: %.1f%%, elements: %d, hit: %d, miss: %d",
-		// 	cs.name, total, percent, cs.sizeCallback(), hit, miss)
+		percent := 100 * float32(hit) / float32(total)
+		xlog.Statf("cache(%s) - qpm: %d, hit_ratio: %.1f%%, elements: %d, hit: %d, miss: %d",
+			cs.name, total, percent, cs.sizeCallback(), hit, miss)
 	}
 }
