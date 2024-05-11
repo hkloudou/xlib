@@ -1,25 +1,19 @@
 package trace
 
-import (
-	"context"
+// func SpanIDFromContext(ctx context.Context) string {
+// 	spanCtx := trace.SpanContextFromContext(ctx)
+// 	if spanCtx.HasSpanID() {
+// 		return spanCtx.SpanID().String()
+// 	}
 
-	"go.opentelemetry.io/otel/trace"
-)
+// 	return ""
+// }
 
-func SpanIDFromContext(ctx context.Context) string {
-	spanCtx := trace.SpanContextFromContext(ctx)
-	if spanCtx.HasSpanID() {
-		return spanCtx.SpanID().String()
-	}
+// func TraceIDFromContext(ctx context.Context) string {
+// 	spanCtx := trace.SpanContextFromContext(ctx)
+// 	if spanCtx.HasTraceID() {
+// 		return spanCtx.TraceID().String()
+// 	}
 
-	return ""
-}
-
-func TraceIDFromContext(ctx context.Context) string {
-	spanCtx := trace.SpanContextFromContext(ctx)
-	if spanCtx.HasTraceID() {
-		return spanCtx.TraceID().String()
-	}
-
-	return ""
-}
+// 	return ""
+// }

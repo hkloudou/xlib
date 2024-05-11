@@ -1,8 +1,7 @@
 package xsys
 
-import "go.uber.org/automaxprocs/maxprocs"
-
+// TODO：Automatically set GOMAXPROCS to match Linux container CPU quota.
 // Automatically set GOMAXPROCS to match Linux container CPU quota.
 func init() {
-	maxprocs.Set(maxprocs.Logger(nil))
+	// maxprocs.Set(maxprocs.Logger(nil))
 }

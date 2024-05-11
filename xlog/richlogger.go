@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/hkloudou/xlib/trace"
 	"github.com/hkloudou/xlib/xtime"
 )
 
@@ -167,16 +166,16 @@ func (l *richLogger) buildFields(fields ...LogField) []LogField {
 	if l.ctx == nil {
 		return fields
 	}
+	//TODO trace
+	// traceID := trace.TraceIDFromContext(l.ctx)
+	// if len(traceID) > 0 {
+	// 	fields = append(fields, Field(traceKey, traceID))
+	// }
 
-	traceID := trace.TraceIDFromContext(l.ctx)
-	if len(traceID) > 0 {
-		fields = append(fields, Field(traceKey, traceID))
-	}
-
-	spanID := trace.SpanIDFromContext(l.ctx)
-	if len(spanID) > 0 {
-		fields = append(fields, Field(spanKey, spanID))
-	}
+	// spanID := trace.SpanIDFromContext(l.ctx)
+	// if len(spanID) > 0 {
+	// 	fields = append(fields, Field(spanKey, spanID))
+	// }
 
 	val := l.ctx.Value(fieldsContextKey)
 	if val != nil {
