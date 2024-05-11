@@ -31,7 +31,7 @@ func TestExclusiveCallDoErr(t *testing.T) {
 	if !errors.Is(err, someErr) {
 		t.Errorf("Do error = %v; want someErr", err)
 	}
-	if v != "" {
+	if v != nil {
 		t.Errorf("unexpected non-nil value %#v", v)
 	}
 }
