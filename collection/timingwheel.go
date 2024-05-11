@@ -1,10 +1,14 @@
-package xcollection
+package collection
 
 import (
 	"container/list"
 	"errors"
 	"fmt"
 	"time"
+
+	"github.com/hkloudou/xlib/lang"
+	"github.com/hkloudou/xlib/threading"
+	"github.com/hkloudou/xlib/xtime"
 	// "github.com/zeromicro/go-zero/core/lang"
 	// "github.com/zeromicro/go-zero/core/threading"
 	// "github.com/zeromicro/go-zero/core/timex"
@@ -24,7 +28,7 @@ type (
 	// A TimingWheel is a timing wheel object to schedule tasks.
 	TimingWheel struct {
 		interval      time.Duration
-		ticker        timex.Ticker
+		ticker        xtime.Ticker
 		slots         []*list.List
 		timers        *SafeMap
 		tickedPos     int
@@ -68,12 +72,12 @@ func NewTimingWheel(interval time.Duration, numSlots int, execute Execute) (*Tim
 			interval, numSlots, execute)
 	}
 
-	return NewTimingWheelWithTicker(interval, numSlots, execute, timex.NewTicker(interval))
+	return NewTimingWheelWithTicker(interval, numSlots, execute, xtime.NewTicker(interval))
 }
 
 // NewTimingWheelWithTicker returns a TimingWheel with the given ticker.
 func NewTimingWheelWithTicker(interval time.Duration, numSlots int, execute Execute,
-	ticker timex.Ticker) (*TimingWheel, error) {
+	ticker xtime.Ticker) (*TimingWheel, error) {
 	tw := &TimingWheel{
 		interval:      interval,
 		ticker:        ticker,

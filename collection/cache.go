@@ -1,4 +1,4 @@
-package xcollection
+package collection
 
 import (
 	"container/list"
@@ -33,7 +33,7 @@ type (
 		expire         time.Duration
 		timingWheel    *TimingWheel
 		lruCache       lru
-		barrier        xsync.SingleFlight
+		barrier        xsync.SingleFlight[any]
 		unstableExpiry xmath.Unstable
 		stats          *cacheStat
 	}
@@ -45,7 +45,7 @@ func NewCache(expire time.Duration, opts ...CacheOption) (*Cache, error) {
 		data:           make(map[string]any),
 		expire:         expire,
 		lruCache:       emptyLruCache,
-		barrier:        xsync.NewSingleFlight(),
+		barrier:        xsync.NewSingleFlight[any](),
 		unstableExpiry: xmath.NewUnstable(expiryDeviation),
 	}
 
@@ -298,8 +298,8 @@ func (cs *cacheStat) statLoop() {
 		if total == 0 {
 			continue
 		}
-		percent := 100 * float32(hit) / float32(total)
-		logx.Statf("cache(%s) - qpm: %d, hit_ratio: %.1f%%, elements: %d, hit: %d, miss: %d",
-			cs.name, total, percent, cs.sizeCallback(), hit, miss)
+		// percent := 100 * float32(hit) / float32(total)
+		// logx.Statf("cache(%s) - qpm: %d, hit_ratio: %.1f%%, elements: %d, hit: %d, miss: %d",
+		// 	cs.name, total, percent, cs.sizeCallback(), hit, miss)
 	}
 }
