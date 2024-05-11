@@ -1,7 +1,5 @@
 package color
 
-import "github.com/fatih/color"
-
 const (
 	// NoColor is no color for both foreground and background.
 	NoColor Color = iota
@@ -40,34 +38,34 @@ const (
 	BgWhite
 )
 
-var colors = map[Color][]color.Attribute{
-	FgBlack:   {color.FgBlack, color.Bold},
-	FgRed:     {color.FgRed, color.Bold},
-	FgGreen:   {color.FgGreen, color.Bold},
-	FgYellow:  {color.FgYellow, color.Bold},
-	FgBlue:    {color.FgBlue, color.Bold},
-	FgMagenta: {color.FgMagenta, color.Bold},
-	FgCyan:    {color.FgCyan, color.Bold},
-	FgWhite:   {color.FgWhite, color.Bold},
-	BgBlack:   {color.BgBlack, color.FgHiWhite, color.Bold},
-	BgRed:     {color.BgRed, color.FgHiWhite, color.Bold},
-	BgGreen:   {color.BgGreen, color.FgHiWhite, color.Bold},
-	BgYellow:  {color.BgHiYellow, color.FgHiBlack, color.Bold},
-	BgBlue:    {color.BgBlue, color.FgHiWhite, color.Bold},
-	BgMagenta: {color.BgMagenta, color.FgHiWhite, color.Bold},
-	BgCyan:    {color.BgCyan, color.FgHiWhite, color.Bold},
-	BgWhite:   {color.BgHiWhite, color.FgHiBlack, color.Bold},
-}
+// var colors = map[Color][]color.Attribute{
+// 	FgBlack:   {color.FgBlack, color.Bold},
+// 	FgRed:     {color.FgRed, color.Bold},
+// 	FgGreen:   {color.FgGreen, color.Bold},
+// 	FgYellow:  {color.FgYellow, color.Bold},
+// 	FgBlue:    {color.FgBlue, color.Bold},
+// 	FgMagenta: {color.FgMagenta, color.Bold},
+// 	FgCyan:    {color.FgCyan, color.Bold},
+// 	FgWhite:   {color.FgWhite, color.Bold},
+// 	BgBlack:   {color.BgBlack, color.FgHiWhite, color.Bold},
+// 	BgRed:     {color.BgRed, color.FgHiWhite, color.Bold},
+// 	BgGreen:   {color.BgGreen, color.FgHiWhite, color.Bold},
+// 	BgYellow:  {color.BgHiYellow, color.FgHiBlack, color.Bold},
+// 	BgBlue:    {color.BgBlue, color.FgHiWhite, color.Bold},
+// 	BgMagenta: {color.BgMagenta, color.FgHiWhite, color.Bold},
+// 	BgCyan:    {color.BgCyan, color.FgHiWhite, color.Bold},
+// 	BgWhite:   {color.BgHiWhite, color.FgHiBlack, color.Bold},
+// }
 
 type Color uint32
 
 // WithColor returns a string with the given color applied.
-func WithColor(text string, colour Color) string {
-	c := color.New(colors[colour]...)
-	return c.Sprint(text)
-}
+// func WithColor(text string, colour Color) string {
+// 	c := color.New(colors[colour]...)
+// 	return c.Sprint(text)
+// }
 
-// WithColorPadding returns a string with the given color applied with leading and trailing spaces.
-func WithColorPadding(text string, colour Color) string {
-	return WithColor(" "+text+" ", colour)
-}
+// // WithColorPadding returns a string with the given color applied with leading and trailing spaces.
+// func WithColorPadding(text string, colour Color) string {
+// 	return WithColor(" "+text+" ", colour)
+// }

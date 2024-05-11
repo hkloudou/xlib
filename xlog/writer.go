@@ -11,8 +11,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	fatihcolor "github.com/fatih/color"
-	"github.com/hkloudou/xlib/color"
+	"github.com/hkloudou/xlib/xcolor"
 )
 
 type (
@@ -89,8 +88,8 @@ func (w *atomicWriter) Swap(v Writer) Writer {
 }
 
 func newConsoleWriter() Writer {
-	outLog := newLogWriter(log.New(fatihcolor.Output, "", flags))
-	errLog := newLogWriter(log.New(fatihcolor.Error, "", flags))
+	outLog := newLogWriter(log.New(xcolor.Output, "", flags))
+	errLog := newLogWriter(log.New(xcolor.Error, "", flags))
 	return &concreteWriter{
 		infoLog:   outLog,
 		errorLog:  errLog,
@@ -321,29 +320,36 @@ func output(writer io.Writer, level string, val any, fields ...LogField) {
 }
 
 func wrapLevelWithColor(level string) string {
-	var colour color.Color
+	// var colour color.Color
 	switch level {
 	case levelAlert:
-		colour = color.FgRed
+		return xcolor.Red(" " + level + " ")
+		// colour = color.FgRed
 	case levelError:
-		colour = color.FgRed
+		// colour = color.FgRed
+		return xcolor.Red(" " + level + " ")
 	case levelFatal:
-		colour = color.FgRed
+		// colour = color.FgRed
+		return xcolor.Red(" " + level + " ")
 	case levelInfo:
-		colour = color.FgBlue
+		// colour = color.FgBlue
+		return xcolor.Blue(" " + level + " ")
 	case levelSlow:
-		colour = color.FgYellow
+		// colour = color.FgYellow
+		return xcolor.Yellow(" " + level + " ")
 	case levelDebug:
-		colour = color.FgYellow
+		// colour = color.FgYellow
+		return xcolor.Yellow(" " + level + " ")
 	case levelStat:
-		colour = color.FgGreen
+		// colour = color.FgGreen
+		return xcolor.Green(" " + level + " ")
 	}
-
-	if colour == color.NoColor {
-		return level
-	}
-
-	return color.WithColorPadding(level, colour)
+	return level
+	// if colour == color.NoColor {
+	// 	return level
+	// }
+	// return xcolor.Red(" " + level + " ")
+	// return color.WithColorPadding(level, colour)
 }
 
 func writeJson(writer io.Writer, info any) {
