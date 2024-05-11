@@ -10,8 +10,8 @@ import (
 )
 
 func TestExclusiveCallDo(t *testing.T) {
-	g := NewSingleFlight()
-	v, err := g.Do("key", func() (any, error) {
+	g := NewSingleFlight[string]()
+	v, err := g.Do("key", func() (string, error) {
 		return "bar", nil
 	})
 	if got, want := fmt.Sprintf("%v (%T)", v, v), "bar (string)"; got != want {
@@ -23,7 +23,7 @@ func TestExclusiveCallDo(t *testing.T) {
 }
 
 func TestExclusiveCallDoErr(t *testing.T) {
-	g := NewSingleFlight()
+	g := NewSingleFlight[any]()
 	someErr := errors.New("some error")
 	v, err := g.Do("key", func() (any, error) {
 		return nil, someErr
@@ -31,13 +31,13 @@ func TestExclusiveCallDoErr(t *testing.T) {
 	if !errors.Is(err, someErr) {
 		t.Errorf("Do error = %v; want someErr", err)
 	}
-	if v != nil {
+	if v != "" {
 		t.Errorf("unexpected non-nil value %#v", v)
 	}
 }
 
 func TestExclusiveCallDoDupSuppress(t *testing.T) {
-	g := NewSingleFlight()
+	g := NewSingleFlight[any]()
 	c := make(chan string)
 	var calls int32
 	fn := func() (any, error) {
@@ -69,7 +69,7 @@ func TestExclusiveCallDoDupSuppress(t *testing.T) {
 }
 
 func TestExclusiveCallDoDiffDupSuppress(t *testing.T) {
-	g := NewSingleFlight()
+	g := NewSingleFlight[any]()
 	broadcast := make(chan struct{})
 	var calls int32
 	tests := []string{"e", "a", "e", "a", "b", "c", "b", "a", "c", "d", "b", "c", "d"}
@@ -102,7 +102,7 @@ func TestExclusiveCallDoDiffDupSuppress(t *testing.T) {
 }
 
 func TestExclusiveCallDoExDupSuppress(t *testing.T) {
-	g := NewSingleFlight()
+	g := NewSingleFlight[any]()
 	c := make(chan string)
 	var calls int32
 	fn := func() (any, error) {

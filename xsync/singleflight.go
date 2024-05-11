@@ -9,31 +9,31 @@ type (
 	// The calls with the same key are dependent, concurrent calls share the returned values.
 	// A ------->calls F with key<------------------->returns val
 	// B --------------------->calls F with key------>returns val
-	SingleFlight interface {
-		Do(key string, fn func() (any, error)) (any, error)
-		DoEx(key string, fn func() (any, error)) (any, bool, error)
+	SingleFlight[T any] interface {
+		Do(key string, fn func() (T, error)) (T, error)
+		DoEx(key string, fn func() (T, error)) (T, bool, error)
 	}
 
-	call struct {
+	call[T any] struct {
 		wg  sync.WaitGroup
-		val any
+		val T
 		err error
 	}
 
-	flightGroup struct {
-		calls map[string]*call
+	flightGroup[T any] struct {
+		calls map[string]*call[T]
 		lock  sync.Mutex
 	}
 )
 
 // NewSingleFlight returns a SingleFlight.
-func NewSingleFlight() SingleFlight {
-	return &flightGroup{
-		calls: make(map[string]*call),
+func NewSingleFlight[T any]() SingleFlight[T] {
+	return &flightGroup[T]{
+		calls: make(map[string]*call[T]),
 	}
 }
 
-func (g *flightGroup) Do(key string, fn func() (any, error)) (any, error) {
+func (g *flightGroup[T]) Do(key string, fn func() (T, error)) (T, error) {
 	c, done := g.createCall(key)
 	if done {
 		return c.val, c.err
@@ -43,7 +43,7 @@ func (g *flightGroup) Do(key string, fn func() (any, error)) (any, error) {
 	return c.val, c.err
 }
 
-func (g *flightGroup) DoEx(key string, fn func() (any, error)) (val any, fresh bool, err error) {
+func (g *flightGroup[T]) DoEx(key string, fn func() (T, error)) (val T, fresh bool, err error) {
 	c, done := g.createCall(key)
 	if done {
 		return c.val, false, c.err
@@ -53,7 +53,7 @@ func (g *flightGroup) DoEx(key string, fn func() (any, error)) (val any, fresh b
 	return c.val, true, c.err
 }
 
-func (g *flightGroup) createCall(key string) (c *call, done bool) {
+func (g *flightGroup[T]) createCall(key string) (c *call[T], done bool) {
 	g.lock.Lock()
 	if c, ok := g.calls[key]; ok {
 		g.lock.Unlock()
@@ -61,7 +61,7 @@ func (g *flightGroup) createCall(key string) (c *call, done bool) {
 		return c, true
 	}
 
-	c = new(call)
+	c = new(call[T])
 	c.wg.Add(1)
 	g.calls[key] = c
 	g.lock.Unlock()
@@ -69,7 +69,7 @@ func (g *flightGroup) createCall(key string) (c *call, done bool) {
 	return c, false
 }
 
-func (g *flightGroup) makeCall(c *call, key string, fn func() (any, error)) {
+func (g *flightGroup[T]) makeCall(c *call[T], key string, fn func() (T, error)) {
 	defer func() {
 		g.lock.Lock()
 		delete(g.calls, key)
