@@ -85,7 +85,7 @@ func (c *Cache[T]) Del(key string) {
 }
 
 // Get returns the item with the given key from c.
-func (c *Cache[T]) Get(key string) (any, bool) {
+func (c *Cache[T]) Get(key string) (T, bool) {
 	value, ok := c.doGet(key)
 	if ok {
 		c.stats.IncrementHit()
