@@ -76,21 +76,11 @@ func GetMapValue(data map[string]any, path string) Result {
 }
 
 // func GetMapString(data map[string]interface{}, path string, defaultValue string) string {
-// 	if val, ok := GetMapValue(data, path); ok {
-// 		if stringVal, ok := val.(string); ok {
-// 			return stringVal
-// 		}
-// 	}
-// 	return defaultValue
+// 	return GetMapValue(data, path).String(defaultValue)
 // }
 
 // func GetMapFloat64(data map[string]interface{}, path string, defaultValue float64) float64 {
-// 	if val, ok := GetMapValue(data, path); ok {
-// 		if stringVal, ok := val.(float64); ok {
-// 			return stringVal
-// 		}
-// 	}
-// 	return defaultValue
+// 	return GetMapValue(data, path).Float(defaultValue)
 // }
 
 // func GetMapInt(data map[string]interface{}, path string, defaultValue int) int {

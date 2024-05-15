@@ -35,7 +35,7 @@ func (m Result) Exists() bool {
 	return m.raw != nil
 }
 
-func (m Result) String() string {
+func (m Result) String(defs ...string) string {
 	switch v := m.raw.(type) {
 	case bool:
 		return strings.ToLower(fmt.Sprintf("%v", v))
@@ -44,6 +44,9 @@ func (m Result) String() string {
 	case int:
 	case float64:
 		return fmt.Sprintf("%v", v)
+	}
+	if len(defs) > 0 {
+		return defs[0]
 	}
 	return ""
 }
@@ -59,10 +62,11 @@ func (m Result) Bool() bool {
 	case float64:
 		return v != 0
 	}
+
 	return false
 }
 
-func (m Result) Int() int64 {
+func (m Result) Int(defs ...int64) int64 {
 	switch v := m.raw.(type) {
 	case bool:
 		if v {
@@ -71,7 +75,10 @@ func (m Result) Int() int64 {
 			return 0
 		}
 	case string:
-		n, _ := parseInt(v)
+		n, ok := parseInt(v)
+		if !ok {
+			break
+		}
 		return n
 	case float64:
 		i, ok := safeInt(v)
@@ -86,11 +93,14 @@ func (m Result) Int() int64 {
 	case int:
 		return int64(v)
 	}
+	if len(defs) > 0 {
+		return defs[0]
+	}
 	return 0
 }
 
 // Uint returns an unsigned integer representation.
-func (m Result) Uint() uint64 {
+func (m Result) Uint(defs ...uint64) uint64 {
 	switch v := m.raw.(type) {
 	case bool:
 		if v {
@@ -99,7 +109,10 @@ func (m Result) Uint() uint64 {
 			return 0
 		}
 	case string:
-		n, _ := parseUint(v)
+		n, ok := parseUint(v)
+		if !ok {
+			break
+		}
 		return n
 	case float64:
 		i, ok := safeInt(v)
@@ -112,11 +125,14 @@ func (m Result) Uint() uint64 {
 		}
 		return uint64(v)
 	}
+	if len(defs) > 0 {
+		return defs[0]
+	}
 	return 0
 }
 
 // Float returns an float64 representation.
-func (m Result) Float() float64 {
+func (m Result) Float(defs ...float64) float64 {
 	switch v := m.raw.(type) {
 	case bool:
 		if v {
@@ -125,10 +141,16 @@ func (m Result) Float() float64 {
 			return 0
 		}
 	case string:
-		n, _ := strconv.ParseFloat(v, 64)
+		n, err := strconv.ParseFloat(v, 64)
+		if err != nil {
+			break
+		}
 		return n
 	case float64:
 		return v
+	}
+	if len(defs) > 0 {
+		return defs[0]
 	}
 	return 0
 }
