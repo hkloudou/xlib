@@ -8,27 +8,31 @@ import (
 )
 
 // Type is Result type
-type Type int
+// type Type int
 
-const (
-	// Null is a null json value
-	Null Type = iota
-	// False is a json false boolean
-	False
-	// Number is json number
-	Number
-	// String is a json string
-	String
-	// True is a json true boolean
-	True
-	// JSON is a raw block of JSON
-	JSON
-)
+// const (
+// 	// Null is a null json value
+// 	Null Type = iota
+// 	// False is a json false boolean
+// 	False
+// 	// Number is json number
+// 	Number
+// 	// String is a json string
+// 	String
+// 	// True is a json true boolean
+// 	True
+// 	// JSON is a raw block of JSON
+// 	JSON
+// )
 
 // Result represents a json value that is returned from Get().
 type Result struct {
 	raw any
 	// exists bool
+}
+
+func (m Result) Raw() any {
+	return m.raw
 }
 
 func (m Result) Exists() bool {

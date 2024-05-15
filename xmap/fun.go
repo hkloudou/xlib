@@ -1,6 +1,7 @@
 package xmap
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -151,59 +152,60 @@ func GetMapValue(data map[string]any, path string) Result {
 // 	}
 // }
 
-// func MergaMap(result *map[string]any, fileds []string, value any, mergeType MergeType) error {
-// 	current := *result
-// 	if mergeType == MergeTypeUpsert {
-// 		_, found := value.(map[string]any)
-// 		if !found {
-// 			return fmt.Errorf("value is not a map, but mergeType is Upsert")
-// 		}
-// 	}
-// 	for i, field := range fileds {
-// 		if i == len(fileds)-1 { // Last
-// 			if mergeType == MergeTypeOver {
-// 				if value == nil {
-// 					delete(current, field)
-// 				} else {
-// 					current[field] = value
-// 				}
-// 			} else if mergeType == MergeTypeUpsert {
-// 				if _, ok := current[field]; !ok {
-// 					current[field] = make(map[string]any)
-// 				}
-// 				for k, v := range value.(map[string]any) {
-// 					if v == nil {
-// 						delete(current[field].(map[string]any), k)
-// 					} else {
-// 						current[field].(map[string]any)[k] = v
-// 					}
-// 				}
-// 			}
-// 		} else {
-// 			if _, ok := current[field]; !ok {
-// 				current[field] = make(map[string]any)
-// 			}
-// 			current = current[field].(map[string]any)
-// 		}
-// 	}
-// 	if len(fileds) == 0 { // Root directory operation
-// 		if mergeType == MergeTypeOver {
-// 			if value == nil {
-// 				*result = make(map[string]any)
-// 			} else {
-// 				*result = value.(map[string]any)
-// 			}
-// 		} else if mergeType == MergeTypeUpsert {
-// 			for k, v := range value.(map[string]any) {
-// 				if v == nil {
-// 					delete((*result), k)
-// 				} else {
-// 					(*result)[k] = v
-// 				}
-// 			}
-// 		} else {
-// 			return fmt.Errorf("unknow mergeType: %v", mergeType)
-// 		}
-// 	}
-// 	return nil
-// }
+func MergaMap(result *map[string]any, fileds []string, value any, upsert bool) error {
+	current := *result
+	if upsert {
+		_, found := value.(map[string]any)
+		if !found {
+			return fmt.Errorf("value is not a map, but Upsert is true")
+		}
+	}
+	for i, field := range fileds {
+		if i == len(fileds)-1 { // Last
+			if !upsert {
+				if value == nil {
+					delete(current, field)
+				} else {
+					current[field] = value
+				}
+			} else if upsert {
+				if _, ok := current[field]; !ok {
+					current[field] = make(map[string]any)
+				}
+				for k, v := range value.(map[string]any) {
+					if v == nil {
+						delete(current[field].(map[string]any), k)
+					} else {
+						current[field].(map[string]any)[k] = v
+					}
+				}
+			}
+		} else {
+			if _, ok := current[field]; !ok {
+				current[field] = make(map[string]any)
+			}
+			current = current[field].(map[string]any)
+		}
+	}
+	if len(fileds) == 0 { // Root directory operation
+		if !upsert {
+			if value == nil {
+				*result = make(map[string]any)
+			} else {
+				*result = value.(map[string]any)
+			}
+		} else if upsert {
+			for k, v := range value.(map[string]any) {
+				if v == nil {
+					delete((*result), k)
+				} else {
+					(*result)[k] = v
+				}
+			}
+		}
+		//  else {
+		// 	return fmt.Errorf("unknow mergeType: %v", mergeType)
+		// }
+	}
+	return nil
+}
